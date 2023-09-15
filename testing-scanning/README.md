@@ -24,21 +24,21 @@ ootb_supply_chain_basic:
 
 ootb_supply_chain_testing_scanning:
   registry:
-    server: europe-west1-docker.pkg.dev
-    repository: tap-sandbox-dev/tapv-engaging-grubworm
+    server: REPLACE_ME
+    repository: REPLACE_ME
 
 namespace_provisioner:
   controller: false
   gitops_install:
     ref: origin/main
-    subPath: clusters/cdd-demo-aws/namespace-provisioner/namespaces
-    url: https://github.com/cdelashmutt-pivotal/demo-clusters-tap
+    subPath: testing-scanning/namespace-provisioner/namespaces
+    url: https://github.com/Tanzu-Solutions-Engineering/tap-sandbox-cookbooks
   #@overlay/replace
   additional_sources:
     - git:
         ref: origin/main
-        subPath: clusters/cdd-demo-aws/namespace-provisioner/testing-scanning-supplychain
-        url: https://github.com/cdelashmutt-pivotal/demo-clusters-tap
+        subPath: testing-scanning/namespace-provisioner/testing-scanning-supplychain
+        url: https://github.com/Tanzu-Solutions-Engineering/tap-sandbox-cookbooks
       path: _ytt_lib/testing-scanning-supplychain
 
 metadata_store:
