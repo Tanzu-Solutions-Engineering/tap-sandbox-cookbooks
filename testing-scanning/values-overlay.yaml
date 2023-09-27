@@ -1,0 +1,45 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@ def renameSupplyChain(original, _):
+#@  origCopy = dict(**original)
+#@  origCopy["ootb_supply_chain_testing_scanning"] = original["ootb_supply_chain_basic"]
+#@  origCopy.pop("ootb_supply_chain_basic")
+#@  return origCopy
+#@ end
+
+#! This first block is just to rename the supply chain key to a different name but keep the existing values
+#@overlay/match by=overlay.all, expects=1
+#@overlay/replace via=renameSupplyChain
+---
+
+#! This second block applies any overrides needed
+#@overlay/match by=overlay.all, expects=1
+#@overlay/match-child-defaults missing_ok=True
+---
+supply_chain: testing_scanning
+
+namespace_provisioner:
+  controller: false
+  gitops_install:
+    ref: origin/main
+    subPath: testing-scanning/namespace-provisioner/namespaces
+    url: https://github.com/Tanzu-Solutions-Engineering/tap-sandbox-cookbooks
+  #@overlay/replace
+  additional_sources:
+    - git:
+        ref: origin/main
+        subPath: testing-scanning/namespace-provisioner/testing-scanning-supplychain
+        url: https://github.com/Tanzu-Solutions-Engineering/tap-sandbox-cookbooks
+      path: _ytt_lib/testing-scanning-supplychain
+
+metadata_store:
+  ns_for_export_app_cert: "*"
+
+scanning:
+  resources:
+    limits:
+      cpu: "500m"
+      memory: 3Gi
+    requests:
+      cpu: 200m
+      memory: 1Gi
